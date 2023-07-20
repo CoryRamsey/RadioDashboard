@@ -4,9 +4,9 @@
 This is a simple radio dashboard for the Yaesu FT-991A. It uses the hamlib library to control the radio. It is written in C and uses GTK3 for the GUI.
 
 It currently supports viewing and changing the frequency of the radio.
-<div style="text-align:center">
-  ![RadioDashboard](https://github.com/CoryRamsey/RadioDashboard/blob/main/images/dash.png)
-</div>
+
+![RadioDashboard](https://github.com/CoryRamsey/RadioDashboard/blob/main/images/dash.png?raw=true)
+
 
 
 ---
