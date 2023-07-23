@@ -18,7 +18,7 @@ typedef struct {
     GtkWidget *disconnected_icon;
     bool connected;
 } WidgetData;
- dm14 n9kt dm76
+ 
 // frequency label update
 gboolean update_frequency_label(gpointer data) {
     WidgetData *widget_data = (WidgetData *)data;
