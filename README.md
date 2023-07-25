@@ -3,7 +3,7 @@
 
 This is a simple radio dashboard for the Yaesu FT-991A.
 
-It currently supports chaning the frequency of the radio and recording audio received from the radio.
+It currently supports changing the frequency of the radio and recording audio received from the radio.
 
 ![RadioDashboard](https://github.com/CoryRamsey/RadioDashboard/blob/main/images/dash.png?raw=true)
 
