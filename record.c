@@ -10,48 +10,11 @@
 #include <sys/ioctl.h>
 #include <fcntl.h>
 
-#ifdef _WIN32
-#include <conio.h>
-
-// Function to check if a key is pressed (Windows)
-int kbhit() {
-    return _kbhit();
-}
-
-#else
-
-// check for keypress(Linux)
-int kbhit() {
-    struct termios oldt, newt;
-    int ch;
-    int oldf;
-
-    tcgetattr(STDIN_FILENO, &oldt);
-    newt = oldt;
-    newt.c_lflag &= ~(ICANON | ECHO);
-    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-    oldf = fcntl(STDIN_FILENO, F_GETFL, 0);
-    fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK);
-
-    ch = getchar();
-
-    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-    fcntl(STDIN_FILENO, F_SETFL, oldf);
-
-    if (ch != EOF) {
-        ungetc(ch, stdin);
-        return 1;
-    }
-
-    return 0;
-}
-
-#endif
 
 #define SAMPLE_RATE 48000
 #define NUM_CHANNELS 2
 #define FRAMES_PER_BUFFER 1024
-#define FILENAME_BASE "recorded_audio"
+#define FILENAME_BASE "recordings/recorded_audio"
 #define VOLUME_SCALE 5.0 // amplify volume
 
 //determine file name
@@ -64,6 +27,8 @@ bool fileExists(const char *filename) {
     return false;
 }
 
+// Global flag to control the recording process
+bool recording_in_progress = false;
 
 void getNextFilename(char *filename, int counter) {
     if (counter == 0) {
@@ -74,7 +39,13 @@ void getNextFilename(char *filename, int counter) {
     strcat(filename, ".wav");
 }
 
-int main() {
+// Function to stop the recording process
+void stop_recording() {
+    recording_in_progress = false;
+    printf("Stopping recording...\n");
+}
+
+int record() {
     pa_simple *paConnection = NULL;
     pa_sample_spec paSampleSpec;
     int error;
@@ -93,11 +64,11 @@ int main() {
 
     // Read audio from PulseAudio, amplify, and write to the WAV file
     int16_t buffer[FRAMES_PER_BUFFER * NUM_CHANNELS];
-    bool recording = true;
-    bool message = false;
+    
     int counter = 0;
     char filename[100];
-    while (recording) {
+    recording_in_progress = true; // Set the global flag to start recording
+    while (recording_in_progress) {
         
         getNextFilename(filename, counter);
 
@@ -120,31 +91,18 @@ int main() {
         }
 
         // Start writing wav to file
-        while (recording) {
+        while (recording_in_progress) {
             if (pa_simple_read(paConnection, buffer, sizeof(buffer), &error) < 0) {
                 fprintf(stderr, "Error reading from PulseAudio: %s\n", pa_strerror(error));
                 break;
             } 
 
-            if (!message) {
-                printf("Recording... Press q to stop\n");
-                message = true;
-            }
-            
             // Amplify the audio samples by scaling them
             for (int i = 0; i < FRAMES_PER_BUFFER * NUM_CHANNELS; i++) {
                 buffer[i] = (int16_t)(buffer[i] * VOLUME_SCALE);
             }
 
             sf_write_short(sndFile, buffer, sizeof(buffer) / sizeof(int16_t));
-
-            // Check for keyboard input to stop recording
-            if (kbhit()) {
-                char ch = getchar();
-                if (ch == 'q' || ch == 'Q') {
-                    recording = false;
-                }
-            }
         }
 
         // Close the WAV file for this recording

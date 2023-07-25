@@ -1,9 +1,9 @@
 # RadioDashboard
 
 
-This is a simple radio dashboard for the Yaesu FT-991A. It uses the hamlib library to control the radio. It is written in C and uses GTK3 for the GUI.
+This is a simple radio dashboard for the Yaesu FT-991A.
 
-It currently supports viewing and changing the frequency of the radio.
+It currently supports chaning the frequency of the radio and recording audio received from the radio.
 
 ![RadioDashboard](https://github.com/CoryRamsey/RadioDashboard/blob/main/images/dash.png?raw=true)
 
@@ -19,13 +19,7 @@ It currently supports viewing and changing the frequency of the radio.
 
 ### Building:
 
-Dashboard and Record:
 - make all
-
-Dashboard or Record Only:
-
-- make dash
-- make record
 
 
 ### Usage:
@@ -33,4 +27,5 @@ Dashboard or Record Only:
 ./dash will run the GUI program. User may need to be in dialout group to access the serial port. The port is currently hardcoded. 
 
 #### Audio Recording:
-./record is a command line tool that will record audio from the radio on the currently tuned frequency. It will record to a file called "recorded_audio.wav" in the current directory. The file can be played back with aplay or other audio players. The recording is done using pulseaudio. Currently, the device name is hardcoded. This may vary from system to system. The device name can be found by running "pactl list sources". The device name is the name in the <> brackets.
+
+Recordings will be saved in ./recordings/. 
