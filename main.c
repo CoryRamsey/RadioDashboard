@@ -20,9 +20,9 @@ typedef struct {
     GtkWidget *entry;
     GtkWidget *connected_icon;
     GtkWidget *disconnected_icon;
-    GtkWidget *record_icon; // New widget to hold the recording indication icon
-    GtkWidget *connect_button; // Combined Connect/Disconnect button
-    GtkWidget *record_button; // "Record" button widget
+    GtkWidget *record_icon; 
+    GtkWidget *connect_button; 
+    GtkWidget *record_button; 
     bool connected;
 } WidgetData;
 
