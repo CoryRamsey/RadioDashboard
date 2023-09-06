@@ -19,6 +19,7 @@ bool connect_radio() {
     }
 
     rig_model_t myrig_model = RIG_MODEL_FT991; // Hardcoded ft991
+
     
 
     // DEBUG
